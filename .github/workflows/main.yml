@@ -1,0 +1,47 @@
+name: CI/CD Pipeline for Learning
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # --- Существующая задача (пример) ---
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm test
+
+  # --- НОВАЯ ЗАДАЧА 1: Проверка стиля кода (Lint) ---
+  lint:
+    needs: test  # Запускается только если тесты прошли успешно
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      # Предполагаем, что в package.json есть скрипт "lint": "eslint ."
+      - name: Run Linter
+        run: npm run lint
+
+  # --- НОВАЯ ЗАДАЧА 2: Подсчет строк кода (SLOC) ---
+  sloc:
+    # Можно запускать параллельно с другими задачами, если не нужны артефакты
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install cloc
+        run: sudo apt-get install -y cloc
+      - name: Count Lines of Code
+        run: cloc .
+        # Вывод покажет статистику по файлам в логах запуска
