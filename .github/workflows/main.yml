@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # --- Существующая задача (пример) ---
+  # --- Существующая задач (пример) ---
   test:
     runs-on: ubuntu-latest
     steps:
